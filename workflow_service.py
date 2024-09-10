@@ -1,58 +1,52 @@
-from flask import Flask, request, jsonify
-
-app = Flask(__name__)
-
-# 处理 workflow 的 API
-@app.route('/workflow', methods=['POST'])
-def process_workflow():
-    try:
-        # 获取请求中的 JSON 数据
-        workflow_data = request.json.get('workflow', {})
-
-        # 确认收到的 workflow_data 是否正确
-        if not workflow_data:
-            return jsonify({"error": "No workflow data received", "received_data": request.json}), 400
-
-        # 初始化结果列表
-        result = []
-
-        # 遍历 workflow，提取 task_id 和 inputs
-        for task_id, task_data in workflow_data.items():
-            if 'inputs' in task_data and isinstance(task_data['inputs'], dict):
-                for input_key, input_value in task_data['inputs'].items():
-                    # 跳过数组类型的数据
-                    if isinstance(input_value, list):
-                        continue
-                    
-                    # 根据数据类型判断 type 是 number、boolean 还是 string
-                    if isinstance(input_value, bool):
-                        input_type = 'boolean'
-                    elif isinstance(input_value, (int, float)):
-                        input_type = 'number'
-                    else:
-                        input_type = 'string'
-
-                    # 添加处理后的数据到结果中
-                    result.append({
-                        'task_id': str(task_id),  # 确保 task_id 是字符串
-                        'inputs': input_key,
-                        'type': input_type,
-                        'class_type': task_data.get('class_type', 'Unknown'),
-                        'default_value': input_value,
-                        'ud_shuidegongzuoliu_my_comfyui_workflow_671649': 1
-                    })
-
-        # 如果结果为空，返回调试信息
-        if not result:
-            return jsonify({"error": "No valid data processed from workflow", "workflow_data": workflow_data}), 200
-
-        # 返回处理结果
-        return jsonify(result), 200
-
-    except Exception as e:
-        # 捕获任何异常并返回
-        return jsonify({'error': str(e)}), 500
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3001)
+{
+  "10": {
+    "inputs": {
+      "precision": "quant8"
+    },
+    "class_type": "DownloadAndLoadChatGLM3",
+    "_meta": {
+      "title": "(Down)load ChatGLM3 Model"
+    }
+  },
+  "11": {
+    "inputs": {
+      "prompt": "cinematic photograph of an astronaut riding a horse in space",
+      "negative_prompt": "text",
+      "num_images_per_prompt": 1,
+      "speak_and_recognation": true,
+      "chatglm3_model": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "KolorsTextEncode",
+    "_meta": {
+      "title": "Kolors Text Encode"
+    }
+  },
+  "12": {
+    "inputs": {
+      "model": "Kwai-Kolors/Kolors",
+      "precision": "fp16"
+    },
+    "class_type": "DownloadAndLoadKolorsModel",
+    "_meta": {
+      "title": "(Down)load Kolors Model"
+    }
+  },
+  "13": {
+    "inputs": {
+      "width": 1088,
+      "height": 1024,
+      "seed": 152342295013028,
+      "steps": 25,
+      "cfg": 5,
+      "scheduler": "EulerDiscreteScheduler",
+      "denoise_strength": 1
+    },
+    "class_type": "KolorsSampler",
+    "_meta": {
+      "title": "Kolors Sampler"
+    }
+  }
+}

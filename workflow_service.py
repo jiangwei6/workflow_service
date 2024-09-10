@@ -9,12 +9,12 @@ def process_workflow():
         # 获取请求中的 JSON 数据
         workflow_data = request.json.get('workflow', {})
 
-        # 初始化结果列表
-        result = []
-
         # 确认收到的 workflow_data 是否正确
         if not workflow_data:
-            return jsonify({"error": "No workflow data received"}), 400
+            return jsonify({"error": "No workflow data received", "received_data": request.json}), 400
+
+        # 初始化结果列表
+        result = []
 
         # 遍历 workflow，提取 task_id 和 inputs
         for task_id, task_data in workflow_data.items():
@@ -24,9 +24,6 @@ def process_workflow():
                     if isinstance(input_value, list):
                         continue
                     
-                    # 调试输出: 查看 task_id 和 inputs 是否正确
-                    print(f"Processing task_id: {task_id}, input_key: {input_key}, input_value: {input_value}")
-
                     # 根据数据类型判断 type 是 number、boolean 还是 string
                     if isinstance(input_value, bool):
                         input_type = 'boolean'

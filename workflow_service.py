@@ -16,7 +16,7 @@ def process_tasks():
         for task_id, task_details in task_data.items():
             if 'inputs' in task_details and isinstance(task_details['inputs'], dict):
                 for input_key, input_value in task_details['inputs'].items():
-                    # 过滤掉数组类型的值
+                    # 过滤掉数组类型的值2
                     if not isinstance(input_value, list):
                         result.append({
                             'task_id': task_id,
@@ -26,7 +26,7 @@ def process_tasks():
                             'ud_shuidegongzuoliu_my_comfyui_workflow_671649': 1
                         })
 
-        # 返回结果
+        # 返回结果2
         return jsonify(result), 200
 
     except Exception as e:

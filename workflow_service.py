@@ -12,6 +12,10 @@ def process_workflow():
         # 初始化结果列表
         result = []
 
+        # 确认收到的 workflow_data 是否正确
+        if not workflow_data:
+            return jsonify({"error": "No workflow data received"}), 400
+
         # 遍历 workflow，提取 task_id 和 inputs
         for task_id, task_data in workflow_data.items():
             if 'inputs' in task_data and isinstance(task_data['inputs'], dict):
@@ -19,6 +23,9 @@ def process_workflow():
                     # 跳过数组类型的数据
                     if isinstance(input_value, list):
                         continue
+                    
+                    # 调试输出: 查看 task_id 和 inputs 是否正确
+                    print(f"Processing task_id: {task_id}, input_key: {input_key}, input_value: {input_value}")
 
                     # 根据数据类型判断 type 是 number、boolean 还是 string
                     if isinstance(input_value, bool):
@@ -30,7 +37,7 @@ def process_workflow():
 
                     # 添加处理后的数据到结果中
                     result.append({
-                        'task_id': task_id,
+                        'task_id': str(task_id),  # 确保 task_id 是字符串
                         'inputs': input_key,
                         'type': input_type,
                         'class_type': task_data.get('class_type', 'Unknown'),
@@ -38,10 +45,15 @@ def process_workflow():
                         'ud_shuidegongzuoliu_my_comfyui_workflow_671649': 1
                     })
 
-        # 返回结果
+        # 如果结果为空，返回调试信息
+        if not result:
+            return jsonify({"error": "No valid data processed from workflow", "workflow_data": workflow_data}), 200
+
+        # 返回处理结果
         return jsonify(result), 200
 
     except Exception as e:
+        # 捕获任何异常并返回
         return jsonify({'error': str(e)}), 500
 
 

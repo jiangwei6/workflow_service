@@ -1,1 +1,1 @@
-web: python app.py
+web: python workflow_service.py

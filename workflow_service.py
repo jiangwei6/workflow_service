@@ -18,12 +18,25 @@ def process_workflow():
                 for input_key, input_value in task_data['inputs'].items():
                     # 过滤掉数组类型的值
                     if not isinstance(input_value, list):
+                        # 判断数据类型
+                        if isinstance(input_value, int):
+                            value_type = "number"
+                        elif isinstance(input_value, float):
+                            value_type = "number"
+                        elif isinstance(input_value, str):
+                            value_type = "string"
+                        elif isinstance(input_value, bool):
+                            value_type = "boolean"
+                        else:
+                            value_type = "unknown"
+
+                        # 添加结果
                         result.append({
                             'task_id': task_id,
                             'inputs': input_key,
-                            'default_value': input_value,
+                            'type': value_type,
                             'class_type': task_data.get('class_type', 'Unknown'),
-                            'ud_shuidegongzuoliu_my_comfyui_workflow_671649': 1
+                            'default_value': input_value
                         })
 
         # 返回结果

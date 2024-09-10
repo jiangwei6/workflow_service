@@ -16,12 +16,10 @@ def process_workflow():
         for task_id, task_data in workflow_data.items():
             if 'inputs' in task_data and isinstance(task_data['inputs'], dict):
                 for input_key, input_value in task_data['inputs'].items():
-                    # 过滤掉数组类型的值
-                    if not isinstance(input_value, list):
-                        # 判断数据类型
-                        if isinstance(input_value, int):
-                            value_type = "number"
-                        elif isinstance(input_value, float):
+                    # 忽略数组类型的值，只处理基本数据类型
+                    if isinstance(input_value, (int, float, str, bool)):
+                        # 确定输入值的类型
+                        if isinstance(input_value, (int, float)):
                             value_type = "number"
                         elif isinstance(input_value, str):
                             value_type = "string"
@@ -30,7 +28,7 @@ def process_workflow():
                         else:
                             value_type = "unknown"
 
-                        # 添加结果
+                        # 添加到结果
                         result.append({
                             'task_id': task_id,
                             'inputs': input_key,

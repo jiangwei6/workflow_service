@@ -16,7 +16,7 @@ def process_workflow():
         for task_id, task_data in workflow_data.items():
             if 'inputs' in task_data and isinstance(task_data['inputs'], dict):
                 for input_key, input_value in task_data['inputs'].items():
-                    # 忽略数组类型的值，只处理基本数据类型
+                    # 只处理基本类型，忽略列表和嵌套对象
                     if isinstance(input_value, (int, float, str, bool)):
                         # 确定输入值的类型
                         if isinstance(input_value, (int, float)):

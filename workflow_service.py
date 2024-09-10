@@ -16,26 +16,27 @@ def process_workflow():
         for task_id, task_data in workflow_data.items():
             if 'inputs' in task_data and isinstance(task_data['inputs'], dict):
                 for input_key, input_value in task_data['inputs'].items():
-                    # 只处理基本类型，忽略列表和嵌套对象
-                    if isinstance(input_value, (int, float, str, bool)):
-                        # 确定输入值的类型
-                        if isinstance(input_value, (int, float)):
-                            value_type = "number"
-                        elif isinstance(input_value, str):
-                            value_type = "string"
-                        elif isinstance(input_value, bool):
-                            value_type = "boolean"
-                        else:
-                            value_type = "unknown"
+                    # 跳过数组类型的数据
+                    if isinstance(input_value, list):
+                        continue
 
-                        # 添加到结果
-                        result.append({
-                            'task_id': task_id,
-                            'inputs': input_key,
-                            'type': value_type,
-                            'class_type': task_data.get('class_type', 'Unknown'),
-                            'default_value': input_value
-                        })
+                    # 根据数据类型判断 type 是 number、boolean 还是 string
+                    if isinstance(input_value, bool):
+                        input_type = 'boolean'
+                    elif isinstance(input_value, (int, float)):
+                        input_type = 'number'
+                    else:
+                        input_type = 'string'
+
+                    # 添加处理后的数据到结果中
+                    result.append({
+                        'task_id': task_id,
+                        'inputs': input_key,
+                        'type': input_type,
+                        'class_type': task_data.get('class_type', 'Unknown'),
+                        'default_value': input_value,
+                        'ud_shuidegongzuoliu_my_comfyui_workflow_671649': 1
+                    })
 
         # 返回结果
         return jsonify(result), 200
